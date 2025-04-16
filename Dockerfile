@@ -1,4 +1,4 @@
-# Use Node.js as base image
+# Base image with Node.js
 FROM node:20-alpine AS base
 
 # Set working directory
@@ -7,7 +7,7 @@ WORKDIR /app
 # Install dependencies
 FROM base AS deps
 COPY package.json package-lock.json ./ 
-RUN npm ci --production # Only install production dependencies
+RUN npm install --production
 
 # Build the application
 FROM base AS builder
@@ -31,8 +31,5 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Expose port
 EXPOSE 5000
 
-# Set environment variables
-ENV PORT 5000
-
-# Start the application
-CMD ["node", "server.js"] # Or use CMD ["next", "start"] if not using a custom server
+# Start the application (Next.js default server)
+CMD ["next", "start"]
